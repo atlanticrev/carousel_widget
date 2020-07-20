@@ -1,6 +1,6 @@
 class Carousel {
 
-    // @todo Options: optional controls, optional swipe threshold, content of slide, resize
+    // @todo Options: optional controls, optional swipe threshold, content of slide, touches
     constructor () {
         this.viewport = this.getDomElement(this.getTemplate());
         this.slides = this.viewport.querySelectorAll('.slide');
@@ -36,8 +36,7 @@ class Carousel {
     render () {
         document.body.appendChild(this.viewport);
 
-        this.slideWidth = this.slides[0].getBoundingClientRect().width;
-        // For example from -1600 to 0
+        this.slideWidth = 100; // 100%
         this.OUT_OF_SWIPE_AREA = this.slideWidth / 4;
         this.LEFT_THRESHOLD = -1 * (this.slideWidth * (this.slides.length - 1)) - this.OUT_OF_SWIPE_AREA; // (-1) direction
         this.RIGHT_THRESHOLD = 0 + this.OUT_OF_SWIPE_AREA;
@@ -50,9 +49,9 @@ class Carousel {
     }
 
     onMouseMove (e) {
-        this.coords.curr = this.coords.prev + e.clientX - this.coords.start;
+        this.coords.curr = this.coords.prev + (e.clientX - this.coords.start) / this.slides[0].getBoundingClientRect().width * 100;
         this.coords.curr = Math.min(this.RIGHT_THRESHOLD, Math.max(this.coords.curr, this.LEFT_THRESHOLD));
-        this.currSlideIndex = Math.round(Math.abs(this.coords.curr) / this.slideWidth);
+        this.currSlideIndex = Math.round(Math.abs(this.coords.curr) / this.slideWidth); // swipeThreshold 50%
 
         // // @todo Calculating swipe threshold
         // const original = Math.abs(this.coords.curr) / this.slideWidth;
@@ -64,15 +63,13 @@ class Carousel {
         //     this.currSlideIndex = Math.floor(Math.abs(this.coords.curr) / this.slideWidth);
         // }
 
-        // console.log(this.currSlideIndex);
-        this.slidesContainer.style.setProperty('--transform', `${this.coords.curr}px`);
+        this.slidesContainer.style.setProperty('--transform', `${this.coords.curr}%`);
     }
 
     onMouseUp () {
-        // this.coords.prev = this.coords.curr;
         const slidePos = -1 * this.currSlideIndex * this.slideWidth;
         this.slidesContainer.style.setProperty('--transition', '0.3s ease-out');
-        this.slidesContainer.style.setProperty('--transform', `${slidePos}px`);
+        this.slidesContainer.style.setProperty('--transform', `${slidePos}%`);
         this.coords.prev = slidePos;
         document.removeEventListener('mousemove', this.onMouseMove);
     }
@@ -103,16 +100,14 @@ class Carousel {
         const newPos = Math.max(-1 * (this.currSlideIndex + 1) * this.slideWidth, this.LEFT_THRESHOLD + this.OUT_OF_SWIPE_AREA);
         this.coords.prev = newPos;
         this.currSlideIndex = Math.min(++this.currSlideIndex, this.slides.length - 1);
-        this.slidesContainer.style.setProperty('--transform', `${newPos}px`);
-        // console.log(this.currSlideIndex);
+        this.slidesContainer.style.setProperty('--transform', `${newPos}%`);
     }
 
     prevSlide () {
         const newPos = Math.min(-1 * (this.currSlideIndex - 1) * this.slideWidth, this.RIGHT_THRESHOLD - this.OUT_OF_SWIPE_AREA);
         this.coords.prev = newPos;
         this.currSlideIndex = Math.max(--this.currSlideIndex, 0);
-        this.slidesContainer.style.setProperty('--transform', `${newPos}px`);
-        // console.log(this.currSlideIndex);
+        this.slidesContainer.style.setProperty('--transform', `${newPos}%`);
     }
 
 }

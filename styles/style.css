@@ -84,6 +84,7 @@ body {
     border-radius: 50%;
     background-color: aliceblue;
 
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     cursor: pointer;
 }
 
@@ -91,7 +92,7 @@ body {
     left: 20px;
     background: url("../images/chevron.svg") no-repeat 22px 20px aliceblue;
     background-size: 20px 20px;
-    transform: translateY(-50%) scale(-1, -1);
+    transform: translateY(-50%) scale(-1, 1);
 }
 
 .controls.right {
