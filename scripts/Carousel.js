@@ -76,7 +76,7 @@ class Carousel {
 
     getDomElement (layout) {
         const wrapper = document.createElement('div');
-        wrapper.innerHTML = layout;
+        wrapper.innerHTML = layout.trim();
         return wrapper.firstElementChild;        
     }
 
